@@ -1,0 +1,11 @@
+name: bkmenv
+channels:
+  - defaults
+dependencies:
+  - python=3.7
+  - scikit-learn
+  - jupyterlab
+  - numpy
+  - pandas
+  - matplotlib
+

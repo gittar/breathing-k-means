@@ -1,0 +1,12 @@
+{
+    "description": "5x5 clusters of 400 gaussian samples , n=10000",
+    "n_samples": 10000,
+    "n_features": 2,
+    "opt_known": false,
+    "opt2_known": false,
+    "opt_k": null,
+    "opt2_k": null,
+    "opt_SSE": null,
+    "opt2_SSE": null,
+    "called_as": "grid(outer=5, inner=20, grid1=1, grid2=0, relsize=0.01, sig=0.016, sig2=0.032)"
+}
