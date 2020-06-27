@@ -4,65 +4,42 @@
 
 This directory contains the reference implementation of "Breathing *k*-means" and supplementary material supporting a current conference submission (see preprint at arxiv (tbd))
 
+## Acknowledgements
+Kudos go the scikit-learn team  which accelerated their sklearn.KMeans class immensely from  version 0.21.1 to 0.23.1. This lead to the decision to abandon a previous GPU-based k-means implementation and use sklearn.KMeans as base class in the breathing k-means reference implementation making it very compact and portable. 
+
 ## Installation using conda
-### create the conda environment
+create the conda environment
 
-  >conda env create -f environment.yml
+```
+$ conda env create -f environment.yml
+```
 
-### activate the created environment
+activate the created environment
 
-  >conda activate bkmenv
+```
+$ conda activate bkmenv
+```
 
 
-## Test Run
+## Running
 
 
 ```
-python src/bkm.py
+$ python src/bkm.py
 ```
 
-This makes a run on a built-in test problem. For detailed simulations please see the jupyter notebook which makes use of bkm.py
+This makes a run on a built-in test problem. For a number of examples please run the enclosed jupyter notebook (which makes use of bkm.py)
 
-### 
+```
+$ jupyter lab notebooks/bkm.ipynb
+```
 
 ## Content
 The top level folder "supplement" contains the following sub folders
-* data  
-(data sets used in the notebook)
-* notebooks  
-(contains a jupyter notebook with demonstrations and reconstructions of several figures in the paper)
-* src  
-contains the implementation and auxiliary files
-
-  * src/bkm.py - stand-alone implementation of breathing k-means   
-    can also be included as module
-
-
-  * aux.py  
-  plotting functions
-
-  * mydataset.py  
-    general class to administer data sets (clustering problems)
-
-  * runfunctions.py  
-    wrapper functions used in the notebook to run our algorithm and k-means++
-    on problems and generate figures illustrating the result
-
-
-
-* notebooks
-
-    * bkm.ipynb - jupyter notebook with examples
-
-
-## Training
-
-(no training needed since the algorithm does not contain adaptive parameters).
-
-## Evaluation
-
-To evaluate the algorithm please open the accompanying notebook and follow the sugggestions there:
-
-```eval
-jupyter lab notebooks/bkm.ipynb
-```
+* data/ - (data sets used in the notebook)
+* notebooks/ - (contains a jupyter notebook with examples)
+* src/  
+  * bkm.py - reference implementation of breathing k-means
+  * aux.py - plotting functions
+  * mydataset.py - general class to administer problem data sets
+  * runfunctions.py  - wrapper functions used in the notebook
