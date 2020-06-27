@@ -5,7 +5,7 @@
 This directory contains the reference implementation of "Breathing *k*-means" and supplementary material supporting a current conference submission (see preprint at arxiv (tbd))
 
 ## Acknowledgements
-Kudos go the scikit-learn team  which accelerated their sklearn.KMeans class immensely from  version 0.21.1 to 0.23.1. This lead to the decision to abandon a previous GPU-based k-means implementation and use sklearn.KMeans as base class in the breathing k-means reference implementation making it very compact and portable. 
+Kudos go the [scikit-learn](https://scikit-learn.org/) team  which accelerated their [sklearn.KMeans class](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans) immensely from  version 0.21.1 to 0.23.1. This lead to the decision to replace a previous GPU-based k-means implementation and use sklearn.KMeans as base class in the breathing k-means reference implementation making it very compact and portable while requiring only a CPU. 
 
 ## Installation using conda
 create the conda environment
