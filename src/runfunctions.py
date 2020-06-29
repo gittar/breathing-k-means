@@ -6,8 +6,10 @@ from sklearn.cluster import KMeans # KMeans class from scikit-lean
 from aux import plot
 from bkm import BKMeans 
 
-def run_models(X,k,opt=None,dotext=True):
+def run_models(X,k,opt_sse=None,dotext=True):
     """for dataset X and given k-value run k-means++ and breathing k-means"""
+    if opt_sse:
+        print(f"Optimum:                 SSE={opt_sse:.3f}")
     # k-means++ (scikit-learn)
     if dotext: 
         print("k-means++ ...           ", end="")
@@ -16,10 +18,10 @@ def run_models(X,k,opt=None,dotext=True):
     km.fit(X)
     t_km=time()-t0
     if dotext:
-        if opt is None: 
+        if opt_sse is None: 
             print(f" SSE={km.inertia_:.3f}                 t={t_km:6.2f}s ")
         else:
-            print(f" SSE=Opt+{km.inertia_/opt-1:6.2%}, t={t_km:6.2f}s ")
+            print(f" SSE={km.inertia_:.3f}=Opt+{km.inertia_/opt_sse-1:6.2%}, t={t_km:6.2f}s ")
 
     # breathing k-means
     if dotext: 
@@ -32,10 +34,10 @@ def run_models(X,k,opt=None,dotext=True):
     imp = 1-bkm.inertia_/km.inertia_
     if dotext: 
         overhead = t_bkm/t_km -1
-        if opt is None: 
+        if opt_sse is None: 
             print(f" SSE={bkm.inertia_:.3f} ({imp:6.2%} lower)  t={t_bkm:6.2f}s", end="")
         else:
-            print(f" SSE=Opt+{bkm.inertia_/opt-1:6.2%}, t={t_bkm:6.2f}s ", end="")
+            print(f" SSE={bkm.inertia_:.3f}=Opt+{bkm.inertia_/opt_sse-1:6.2%}, t={t_bkm:6.2f}s ", end="")
         print(f" ({overhead:6.2%} overhead)")
         
     return km,bkm,imp
@@ -47,7 +49,7 @@ def do_fig(X,k,n,km,bkm):
     fig,ax=plt.subplots(1,3,figsize=(21,6))
     plot(X,ax=ax[0],title=f"data set\n n={n} ")
     plot(X,ax=ax[1],C=km.cluster_centers_,title=f"k-means++\nk={k}, SSE={km.inertia_:.3f}")
-    plot(X,ax=ax[2],C=bkm.cluster_centers_,title=f"breathing k-means \nk={k}, SSE={bkm.inertia_:.3f}, {imp:.2%} lower")
+    plot(X,ax=ax[2],C=bkm.cluster_centers_,title=f"breathing k-means \nk={k}, SSE={bkm.inertia_:.3f} ({imp:.2%} lower)")
     plt.show()
 
 def do_fig_opt(X,k,n,km,bkm,D,opt2):
@@ -60,9 +62,9 @@ def do_fig_opt(X,k,n,km,bkm,D,opt2):
         opt = D.get_opt_sse()
         Copt= D.get_optimum()
     fig,ax=plt.subplots(1,3,figsize=(21,7))
-    plot(X,ax=ax[0],C=Copt,title=f"data set with optimal solution (red)\n n={n}, k={k} ")
-    plot(X,ax=ax[1],C=km.cluster_centers_,title=f"k-means++\nk={k}, SSE=Opt+{km.inertia_/opt-1:.2%}")
-    plot(X,ax=ax[2],C=bkm.cluster_centers_,title=f"breathing k-means \nk={k}, SSE=Opt+{bkm.inertia_/opt-1:.2%},")
+    plot(X,ax=ax[0],C=Copt,title=f"data set with optimal solution (red)\n n={n}, k={k}, Opt={opt:.3f} ")
+    plot(X,ax=ax[1],C=km.cluster_centers_,title=f"k-means++\nSSE={km.inertia_:.3f}=Opt+{km.inertia_/opt-1:.2%}")
+    plot(X,ax=ax[2],C=bkm.cluster_centers_,title=f"breathing k-means \nSSE={bkm.inertia_:.3f}=Opt+{bkm.inertia_/opt-1:.2%},")
     plt.show()
 
 def run_on_stored_dataset(prefix, dir="../data", k=50, doplot=True, dotext=True, retval=False):
@@ -94,10 +96,16 @@ def run_on_stored_dataset_with_opt(prefix,dir="../data", doplot=True, dotext=Tru
     n = D.get_n()
     # use the k for which the optimum is known
     k=D.get_opt_k()
-    opt=D.get_opt_sse()
-    km,bkm,imp=run_models(X=X,k=k,opt=opt,dotext=dotext)
+    opt_sse=D.get_opt_sse()
+    km,bkm,imp=run_models(X=X,k=k,opt_sse=opt_sse,dotext=dotext)
     if doplot:
         do_fig_opt(X=X,k=k,n=n,km=km,bkm=bkm,D=D,opt2=False)
+    # plausicheck - stored optimum must equal computeted error of optimal codebook
+    # (up to mumerical inaccuracies)
+    opt_C=D.get_optimum()
+    _bkm=BKMeans(n_clusters=k,init=opt_C)
+    E,_=_bkm.get_error_and_utility(X,opt_C)
+    assert(np.abs(1-np.sum(E)/opt_sse)<1e-10)
     if retval:
         return X,km,bkm
 
@@ -114,8 +122,8 @@ def run_on_stored_dataset_with_opt2(prefix,dir="../data", doplot=True, dotext=Tr
     # use the k for which the optimum2 is known
     k=D.get_opt2_k()
     n = D.get_n()
-    opt=D.get_opt2_sse()
-    km,bkm,imp=run_models(X=X,k=k,opt=opt,dotext=dotext)
+    opt_sse=D.get_opt2_sse()
+    km,bkm,imp=run_models(X=X,k=k,opt_sse=opt_sse,dotext=dotext)
     if doplot:
         do_fig_opt(X=X,k=k,n=n,km=km,bkm=bkm,D=D,opt2=True)
     if retval:
