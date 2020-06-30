@@ -5,7 +5,7 @@
 This directory contains the reference implementation of "Breathing *k*-means" and supplementary material supporting a current conference submission (preprint: https://arxiv.org/abs/2006.15666)
 
 ### Installation using conda
-Clone the repository, enter the top directory and create the conda environment via
+Clone the repository, enter the top directory and then create the conda environment via
 
 ```
 $ conda env create -f environment.yml
