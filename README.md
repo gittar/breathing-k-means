@@ -21,12 +21,10 @@ The file [src/bkm.py](src/bkm.py) contains the complete implementation of breath
 ```
 $ python src/bkm.py
 ```
-
 This makes a run on a built-in test problem comparing k-means++, breathing k-means with random init (the default), and breathing k-means with k-means++ init. Sample output:
 
 ```
 k=100, data set: 10000 points drawn from mixture of 50 Gaussians in R^2 with cov=0.01^2*I2
-
 
 algorithm         | init      | n_init | SSE                   | t
 __________________|___________|________|_______________________|_______________________
