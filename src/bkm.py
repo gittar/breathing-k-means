@@ -85,7 +85,7 @@ class BKMeans(KMeans):
                 n_neighbors = is_close[useless_idx].sum()-1
                 for neighbor in c_dist_srt_idx[useless_idx][1:n_neighbors+1]:
                     if len(Frozen) + m < k:
-                        # still enough not frozen to find m for removal
+                        # still enough unfrozen to find m centroids for removal
                         Frozen.add(neighbor)
                 if len(D)==m:
                     break

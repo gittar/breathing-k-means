@@ -1,4 +1,4 @@
-## README
+<img src="data/random_kmpp.gif" width=""> 
 
 ## Breathing *k*-means
 
