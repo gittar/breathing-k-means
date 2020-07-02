@@ -5,6 +5,8 @@ This directory contains the reference implementation of "Breathing *k*-means" an
 
 <img src="data/random_kmpp.gif" width=""> 
 
+Breathing *k*-means animation for a 2D dataset of size 2304 arranged in 36 quadratic clusters. The number *k* of centroids is 144. The optimal solution has 4 centroids in each cluster. 
+
 ### Installation using conda
 Clone the repository, enter the top directory and then create the conda environment via
 
