@@ -1,8 +1,9 @@
-<img src="data/random_kmpp.gif" width=""> 
 
 ## Breathing *k*-means
 
 This directory contains the reference implementation of "Breathing *k*-means" and supplementary material supporting a current conference submission (preprint: https://arxiv.org/abs/2006.15666)
+
+<img src="data/random_kmpp.gif" width=""> 
 
 ### Installation using conda
 Clone the repository, enter the top directory and then create the conda environment via
