@@ -1,0 +1,9 @@
+channels:
+  - defaults
+dependencies:
+  - python>=3.7
+  - nb_conda_kernels
+  - matplotlib
+  - pandas
+  - scikit-learn>=0.23.2
+  - jupyterlab
