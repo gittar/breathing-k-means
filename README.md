@@ -1,7 +1,7 @@
 
 # Breathing *k*-means
 
-This directory contains the reference implementation of "Breathing *k*-means", a new approximation algorithm for the $k$-means problem which typically improves significantly upon $k$-means++. For a full description see https://arxiv.org/abs/2006.15666 
+This directory contains the reference implementation of "Breathing *k*-means", a new approximation algorithm for the *k*-means problem which typically improves significantly upon *k*-means++. For a full description see https://arxiv.org/abs/2006.15666 
 
 
 ## Installation from pypi
@@ -12,7 +12,7 @@ pip install bkmeans
 Clone the repository
 
 ```shell
-git clone https://github.com/gittar/tensorflow_transfer.git
+git clone https://github.com/gittar/breathing-k-means
 ```
 Enter the top directory.
 
@@ -36,7 +36,7 @@ conda activate bkm
  
  * [2D.ipynb](notebooks/2D.ipynb) 2D-problems from https://arxiv.org/abs/2006.15666 executed with helper functions for brevity
  * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D-problems from https://arxiv.org/abs/2006.15666 executed with raw API
- * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the original $k$-means++ publication (https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
+ * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the original *k*-means++ publication (https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
 
  To run, e.g. the first notebook, type:
 
@@ -62,9 +62,9 @@ The BKMeans class is directly derived from scikit-learn's [KMeans](https://sciki
 *  'theta': default=1.1 ("freezing range", i.e., relative neighborhood width to determine which centroids around a removed centroid are declared 'frozen')
 
 Relevant inherited parameters (with default values) are:
-*  'n\_clusters': default=8 (number of cluster centers, i.e., the *k*in *k*-means)
+*  'n\_clusters': default=8 (number of cluster centers, i.e., the *k* in *k*-means)
 *  'init': default='k-means++' (method for initializing the centroids). Possible values are "k-means++", "random" or an array to be used as initial codebook.
-*  'n\_init': default=10 (number of times the *k*-means algorithm will be run with different centroid seeds. The best result is taken as seeding for \bkm.)
+*  'n\_init': default=10 (number of times the *k*-means algorithm will be run with different centroid seeds. The best result is taken as seeding for breathing *k*-means.)
 *  'tol': default=0.0001 (relative tolerance wrt. Frobenius norm  of the difference in the cluster centers of two consecutive iterations to declare convergence, also used for breathing *k*-means)
 
 ## Example 1: running on simple random data set
