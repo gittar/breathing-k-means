@@ -9,8 +9,8 @@ Typical results for the "rice" data set (10000 points drawn from a mixture of 20
 [movie (animated gif)](./img/2D-examples.gif) with all 2D examples from https://arxiv.org/abs/2006.15666
 
 ## Installation from pypi
+(requires Python 3.7+)
 ```
-# requires python 3.7+
 pip install bkmeans
 ```
 ## Local installation to run the examples
