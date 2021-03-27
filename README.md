@@ -10,6 +10,7 @@ Typical results for the "rice" data set (10000 points drawn from a mixture of 20
 
 ## Installation from pypi
 ```
+# requires python 3.7+
 pip install bkmeans
 ```
 ## Local installation to run the examples
