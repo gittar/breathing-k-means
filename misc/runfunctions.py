@@ -1,16 +1,9 @@
 import time
-import dataset
 import sklearn.cluster  # KMeans class from scikit-lean
 import aux
 import bkmeans
 import pandas as pd
 
-
-def correct_numerics(imp):
-    # correct negative deltas very close to 0
-    if imp < 0 and imp > -0.000000001:
-        imp = 0
-    return imp
 
 def run_models(D, k, dotext=True, km_args={}, bkm_args={}):  # NOSONAR
     """ run k-means++ and breathing k-means on given problem
@@ -60,16 +53,10 @@ def run_models(D, k, dotext=True, km_args={}, bkm_args={}):  # NOSONAR
 
     return km, bkm, t_km, t_bkm
 
-
-def handle_problem(D, k, dotext=True):
-    assert isinstance(k, int) and k > 0
-    km, bkm, t_km, t_bkm = run_models(D=D, k=k, dotext=dotext)
-    return km, bkm
-
 def solve_problem(D, k, doplot=None, dotext=None,
                   retval=False, repeat=1,
                   km_args={}, bkm_args={}, **kwargs):
-    """stored data sets with known optimum for a particular k-value
+    """run km++ and breathing k-means on the given data set D
     D: Dataset
     k: k
     doplot: show plot?

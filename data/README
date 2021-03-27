@@ -1,0 +1,39 @@
+Origin of the data sets
+=======================
+
+2D data sets from the literature (obtained from http://cs.joensuu.fi/sipu/datasets/)
+
+• ”Jain”: Jain and Law (2005)
+• ”R15”, ”D31”: Veenman et al. (2002)
+• ”Aggregation”: Gionis et al. (2007)
+• ”Flame”: Fu and Medico (2007)
+• ”Spiral”: Chang and Yeung (2008)
+• ”S2”: Fränti and Virmajoki (2006)
+• ”Unbalance”: Rezaei and Fränti (2016)
+• ”Birch1”, ”Birch2”: Zhang et al. (1997)
+
+self-generated 2D data sets (see preprint https://arxiv.org/abs/2006.15666 for a description)
+
+• "gmd5x5"
+• "gmd8x8"
+• "noise"
+• "vardensity"
+• "uniform"
+• "sq6x6-2x2"
+• "randangles"
+• "stains"
+• "correlated"
+• "rice"
+
+Higer-dimensional data sets:
+
+• "Norm25-new": This data set was generated from a mixture of 25 Gaussians in 15-dimensional space
+  following a description of the Norm25 dataset from the original k-means++ publication
+• "Cloud": This data set is 10-dimensional and stems from https://archive.ics.uci.edu/ml/datasets/Cloud
+  from the UCI Machine Learning Repository
+• "Intrusion": This data set was extracted from https://archive.ics.uci.edu/ml/datasets/kdd+cup+1999+data
+  from the UCI Machine Learning Repository by taking the file kddcup.data_10_percent.gz and 
+  selecting the 35 numeric features (from a total of 42). 
+• "Spam": This data set is 58-dimensional and  stems from https://archive.ics.uci.edu/ml/datasets/Spambase
+  from the UCI Machine Learning Repository
+

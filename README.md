@@ -3,6 +3,10 @@
 
 This directory contains the reference implementation of "Breathing *k*-means", a new approximation algorithm for the *k*-means problem which typically improves significantly upon *k*-means++. For a full description see https://arxiv.org/abs/2006.15666 
 
+Typical results for the "rice" data set (10000 points drawn from a mixture of 200 elongated 2D-Gaussians). $k$=80
+<img src="./img/rice.png" alt="rice data set" width="1000" />
+
+[movie (animated gif)](./img/2D-examples.gif) with all 2D examples from https://arxiv.org/abs/2006.15666
 
 ## Installation from pypi
 ```

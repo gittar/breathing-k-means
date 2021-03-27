@@ -4,19 +4,6 @@ import matplotlib.pyplot as plt
 import dataset
 
 
-def isstuff(x):
-    return (x is not None) and \
-        not (isinstance(x, int) and x == 0) and \
-        not (isinstance(x, str) and x == "") and \
-        not (isinstance(x, bool) and not x)
-
-def noticks(ax):
-    """modify graph to have no axis ticks"""
-    ax.tick_params(length=0)
-    ax.axes.xaxis.set_ticklabels([])
-    ax.axes.yaxis.set_ticklabels([])
-
-
 def fmt(x, maxdig=6, maxpost=3):
     """format float possibly in E-format"""
     X = math.fabs(x)

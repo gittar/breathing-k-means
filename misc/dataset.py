@@ -1,24 +1,15 @@
 import random
 import os
-import json
 import pandas as pd
 import numpy as np
 import functools
 import matplotlib.pyplot as plt
 import scipy.spatial
-import matplotlib.patches as patches
 
 # DataSet  class
-# (the works)
 
-np.seterr(all="raise")
-
-
-def sort_dict(D):
-    "sort dicts with numeric keys"
-    return {k: v for k, v in sorted(D.items(), key=lambda item: int(item[0]))}
-
-def simmi(x):
+def arr2txt(x):
+    """replace arrays by the string 'array'"""
     if isinstance(x, np.ndarray):
         return "array"
     else:
@@ -49,7 +40,7 @@ def store_call(func, *args, **kwargs):
         # args
         if len(args) > 1:
             mycall += ", ".join(map(lambda x: "\"" +
-                                    str(simmi(x)) + "\"", args[1:])) + ", "
+                                    str(arr2txt(x)) + "\"", args[1:])) + ", "
         # kwargs
         for k, v in kwargs.items():
             if isinstance(v, np.ndarray):
@@ -63,36 +54,11 @@ def store_call(func, *args, **kwargs):
     return wrapper
 
 
-class InsufficientParamsException(Exception):
-    pass
-
-
-class NoKException(Exception):
-    pass
-
-
-class KTooLargeException(Exception):
-    pass
-
-
-class UnknownInitException(Exception):
-    pass
-
-
-class OldFileFormatException(Exception):
-    pass
-
-
-class NoDataException(Exception):
-    pass
-
-
 class DataSet:
-    """
-administers test datasets for clustering algorithms
+    """administers test datasets for clustering algorithms
 
-some methods provide initalization of a codebook with different methods
-    * randomly from the dataset without repetition: random_init()
+    (this class may look a bit overengineered, since it is a subset of
+    a yet unpublished class which is able to generate various kinds of data sets)
     """
 
     _num_type = np.float64
@@ -109,24 +75,15 @@ some methods provide initalization of a codebook with different methods
     def _get_num_type():
         return DataSet._num_type
 
-    @staticmethod
-    def noptword():
-        return "generic"
-
     def __init__(self, n=None, d=None):
         """constructor, sets variable which are needed to create the dataset later
         to actually generate data, method .... needs to be called
         """
-        self.version = "1.0.1"
+        self.version = "1.1"
         self.set_name(None)
-        self.deterministic = True
         self.n = n  # number of data points
         self.d = d  # dimensionality of data
-
-        # codebook after initialization (random or k-means++)
-        self.ibook = None
         self.k = None
-        self.d2 = 1  # minimum dimension for ibook (for drawing purposes)
         self._called_as = None  # how is this dataset generated?
         self._seed = None
 
@@ -146,9 +103,6 @@ some methods provide initalization of a codebook with different methods
 
     def set_description(self, desc):
         self.description = desc
-
-    def codebook_present(self):
-        return self.ibook is not None
 
     def set_name(self, name):
         self.name = name
@@ -219,62 +173,45 @@ some methods provide initalization of a codebook with different methods
         obj.description = f"data from txt-file {filename}, dim={d}, n={n}"
         return obj
 
-    def normalize(self, vertical="center", horizontal="center", REFX=None):
+    def normalize(self, vertical="center", horizontal="center"):
         """ scale data such that it fits into the unit square
         (only applicable for 2D-data)
-        vertical: vertical alignment (center or top, bottom nyi) # TODO
-        horizontal: horiontal alignment: (center or right, left nyi) # TODO
-
-        if aray REFX is given, determine scaling such that REFX fits into the unit square
+        vertical: vertical alignment (center or top, else bottom)
+        horizontal: horiontal alignment: (center or right, else left)
         """
         X = self.get_data()
         _, d = X.shape
         if d == 2:
-            if REFX is None:
-                yrange = np.max(X[:, 1]) - np.min(X[:, 1])
-                xrange = np.max(X[:, 0]) - np.min(X[:, 0])
-                maxrange = max(xrange, yrange)
-                scale = 1 / maxrange
-                # scale to length/wid 1
-                X = X * scale  # scaling
-                # shift to have lower-left on origin
-                offset = - np.asarray([np.min(X[:, 0]), np.min(X[:, 1])])
-                X = X + offset
-                # left, bottom of unit square
-                uyrange = yrange / maxrange
-                uxrange = xrange / maxrange
-            else:
-                #
-                # normalize wrt reference data
-                #
-                yrange = np.max(REFX[:, 1]) - np.min(REFX[:, 1])
-                xrange = np.max(REFX[:, 0]) - np.min(REFX[:, 0])
-                maxrange = max(xrange, yrange)
-                scale = 1 / maxrange
-                X = X * scale  # scaling
-                REFX = REFX * scale
-                offset = - np.asarray([np.min(REFX[:, 0]), np.min(REFX[:, 1])])
-                X = X + offset
-                # left, bottom of unit square
-                uyrange = yrange / maxrange
-                uxrange = xrange / maxrange
+            yrange = np.max(X[:, 1]) - np.min(X[:, 1])
+            xrange = np.max(X[:, 0]) - np.min(X[:, 0])
+            maxrange = max(xrange, yrange)
+            scale = 1 / maxrange
+            # scale to length/wid 1
+            X = X * scale  # scaling
+            # shift to have lower-left on origin
+            offset = - np.asarray([np.min(X[:, 0]), np.min(X[:, 1])])
+            X = X + offset
+            # left, bottom of unit square
+            uyrange = yrange / maxrange
+            uxrange = xrange / maxrange
 
             # shift data if it does not fill whole unit square in one direction
             if vertical == "center":
                 dy = (1 - uyrange) / 2
             elif vertical == "top":
                 dy = (1 - uyrange)
+            else:
+                dy = 0
 
             if horizontal == "center":
                 dx = (1 - uxrange) / 2
             elif horizontal == "right":
                 dx = (1 - uxrange)
+            else:
+                dx = 0
 
             shift = np.asarray([dx, dy])
             X += shift
-            if hasattr(self, "gamma"):
-                # adjust gamma
-                self.gamma *= scale
 
             self.data = X
 
@@ -300,17 +237,12 @@ some methods provide initalization of a codebook with different methods
 
     def get_params(self):
         """return main parameters of dataset"""
-        pars = {
+        return {
             "description": self.get_description(),
             "n_samples": self.get_n(),
             "n_features": self.get_d(),
             "called_as": self._called_as,
         }
-        if hasattr(self, "gamma"):
-            pars["gamma"] = self.gamma
-        if hasattr(self, "inner"):
-            pars["inner"] = self.inner
-        return pars
 
     def get_description(self):
         """return description of dataset"""
@@ -323,30 +255,6 @@ some methods provide initalization of a codebook with different methods
     def get_n(self):
         """return number of samples"""
         return len(self.get_data())
-
-    def initialize(self, k, init):
-        if init == "random":
-            return self.random_init(k=k)
-        else:
-            raise UnknownInitException("Unknown init method:", init)
-
-    def random_init(self, k=None):
-        """get codebook of size k at random from dataset"""
-        if k is not None:
-            self.k = k
-        else:
-            # keep current value of k
-            pass
-        if self.data.any():
-            a = list(range(self.get_n()))
-            np.random.shuffle(a)
-            self.ibook = np.zeros(
-                (self.k, max([self.d2, self.get_d()])))  # ibook definition
-            for i in range(self.k):
-                self.ibook[i] = self.data[a[i]]
-            return self.ibook
-        else:
-            raise NoDataException("no data found")
 
     def shuffle(self):
         """ randomize data order
@@ -379,6 +287,8 @@ some methods provide initalization of a codebook with different methods
              C=None,
              title=None,  # title string, font size from rc
              subtitle=None,  # additional text shown *under* the figure
+             subtitle_alpha = 0.5,
+             subtitle_color = "red",
              dotsize=1,  # size of data points
              dotcolor="green",  # color of datapoints
              centersize=6,  # sice of centroids
@@ -485,8 +395,6 @@ some methods provide initalization of a codebook with different methods
             eqlim(ax, xlim=xlim, ylim=ylim, X=X)
         else:  # no scaling here
             omnipad = unitpad
-            if hasattr(D, "gamma"):
-                omnipad += D.gamma / (D.inner - 1) / 2
             # make limits dependent on data
             xlim = (np.min(X[:, 0]) - omnipad * dx,
                     np.max(X[:, 0]) + omnipad * dx)
@@ -518,8 +426,6 @@ some methods provide initalization of a codebook with different methods
         ax.set_title(title, fontsize=fontsize)
 
         # transparent overlay
-        over_alpha = 0.5
-        over_color = "red"
         if subtitle is not None:
             ax.text(
                 0.5,
@@ -530,8 +436,8 @@ some methods provide initalization of a codebook with different methods
                 transform=ax.transAxes,
                 fontsize=fontsize,
                 fontweight="normal",
-                alpha=over_alpha,
-                color=over_color,
+                alpha=subtitle_alpha,
+                color=subtitle_color,
                 zorder=12)
 
         if not showaxis:
@@ -554,19 +460,18 @@ def isstuff(x):
         not (isinstance(x, str) and x == "") and \
         not (isinstance(x, bool) and not x)
 
-# modify graph o have no axis ticks
-
 
 def noticks(ax):
+    """modify graph o have no axis ticks"""
     ax.tick_params(length=0)
     ax.axes.xaxis.set_ticklabels([])
     ax.axes.yaxis.set_ticklabels([])
 
-# in a list of axes set all dims to that of the first axis
-# or to the dimensions given in the parameters
-
 
 def eqlim(axs, xlim=None, ylim=None, unitpad=None, X=None):
+    """in a list of axes set all dims to that of the first axis
+    or to the dimensions given in the parameters
+    """
     assert ylim is None or len(ylim) == 2
     assert xlim is None or len(xlim) == 2
     try:
@@ -600,12 +505,10 @@ def eqlim(axs, xlim=None, ylim=None, unitpad=None, X=None):
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
         ax.set_aspect(1.0)
-#
-# plot
-#
 
 
 def scat(P, s=1, c="r", ax=None, zorder=0, marker="o"):
+    "scatter plot"
     if P is None:
         # no data, ignore
         return
