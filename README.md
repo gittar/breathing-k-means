@@ -24,7 +24,7 @@ Enter the top directory.
 ```shell
 cd bkmeans
 ```
- and then create the conda environment 'bkm' (or any other name) via
+Create the conda environment 'bkm' (or any other name) via
 
 ```shell
 conda env create -n bkm -f environment.yml
