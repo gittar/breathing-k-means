@@ -1,15 +1,15 @@
 
-# Breathing *k*-means
+# The Breathing *K*-Means Algorithm (with examples)
 
-This directory contains the reference implementation of "Breathing *k*-means", a new approximation algorithm for the *k*-means problem which typically improves significantly upon *k*-means++. For a full description see https://arxiv.org/abs/2006.15666 
+The Breathing *K*-Means is an approximation algorithm for the *k*-means problem that (on average) is **better** (higher solution quality) and **faster** (lower CPU time usage) than  ***k*-means++**. 
+
+**Techreport:**
+https://arxiv.org/abs/2006.15666 (preprint)
 
 Typical results for the "rice" data set (10000 points drawn from a mixture of 200 elongated 2D-Gaussians). *k*=80
 <img src="./img/rice.png" alt="rice data set" width="1000" />
 
-[movie (animated gif)](./img/2D-examples.gif) with all 2D examples from https://arxiv.org/abs/2006.15666
-
 ## Installation from pypi
-(requires Python 3.7+)
 ```
 pip install bkmeans
 ```
@@ -22,7 +22,7 @@ git clone https://github.com/gittar/breathing-k-means
 Enter the top directory.
 
 ```shell
-cd bkmeans
+cd breathing-k-means
 ```
 Create the conda environment 'bkm' (or any other name) via
 
@@ -39,9 +39,9 @@ conda activate bkm
 
  For a number of examples please run any of the enclosed jupyter notebooks
  
- * [2D.ipynb](notebooks/2D.ipynb) 2D-problems from https://arxiv.org/abs/2006.15666 executed with helper functions for brevity
- * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D-problems from https://arxiv.org/abs/2006.15666 executed with raw API
- * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the original *k*-means++ publication (https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
+ * [2D.ipynb](notebooks/2D.ipynb) 2D-problems from the [technical report](https://arxiv.org/abs/2006.15666) executed with helper functions for brevity
+ * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D-problems from the [technical report](https://arxiv.org/abs/2006.15666) executed with raw API
+ * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the [original *k*-means++ publication](https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
 
  To run, e.g. the first notebook, type:
 
@@ -50,27 +50,26 @@ $ jupyter lab notebooks/2D.ipynb
 ```
 
 ## Content
-The top level folder contains the following sub folders
-* data/ - (data sets used in the notebook)
-* notebooks/ - (contains jupyter notebooks with examples)
+The top level folder contains the following subfolders
+* data/ - data sets used in the notebooks
+* notebooks/ - jupyter notebooks with examples
 * src/  
   * ``bkmeans.py`` - reference implementation of breathing k-means
 * misc/
-  * ``aux.py`` - auxiliary functions
+  * `aux.py` - auxiliary functions
   * `dataset.py` - general class to administer and plot data sets
   * `runfunctions.py`  - wrapper functions used in the notebook
 
 ## API
 
-The BKMeans class is directly derived from scikit-learn's [KMeans](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans) class class and thus has the same API, plus the following two new parameters with default values which normally can be left unchanged:
-*  'm': default=5 ("breathing depth", i.e., the initial number of centroids to be added and removed during a breathe in/out cycle)
-*  'theta': default=1.1 ("freezing range", i.e., relative neighborhood width to determine which centroids around a removed centroid are declared 'frozen')
+The included class **BKMeans** is subclassed from [scikit-learn's **KMeans** class](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+and has, therefore, **the same API**. It can be used as a plug-in replacement for scikit-learn's **KMeans**. 
 
-Relevant inherited parameters (with default values) are:
-*  'n\_clusters': default=8 (number of cluster centers, i.e., the *k* in *k*-means)
-*  'init': default='k-means++' (method for initializing the centroids). Possible values are "k-means++", "random" or an array to be used as initial codebook.
-*  'n\_init': default=10 (number of times the *k*-means algorithm will be run with different centroid seeds. The best result is taken as seeding for breathing *k*-means.)
-*  'tol': default=0.0001 (relative tolerance wrt. Frobenius norm  of the difference in the cluster centers of two consecutive iterations to declare convergence, also used for breathing *k*-means)
+There is one new parameters which can be ignored (left at default) for normal usage:
+
+* *m* (breathing depth), default: 5
+
+The parameter *m* can also be used, however, to generate faster ( 1 < *m* < 5) or better (*m*>5) solutions. For details see the above techreport.
 
 ## Example 1: running on simple random data set
 Code:
@@ -132,6 +131,6 @@ SSE improvement over k-means++: 4.76%
 ```
 
 ## Acknowledgements
-Kudos go the [scikit-learn](https://scikit-learn.org/) team  for their excellent and efficient  [sklearn.cluster.KMeans](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans) class, also to the developers and maintainers of the other packages used: scipy, matplotlib, jupyterlab
+Kudos go the [scikit-learn](https://scikit-learn.org/) team  for their excellent  [sklearn.cluster.KMeans](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans) class, also to the developers and maintainers of the other packages used: numpy, scipy, matplotlib, jupyterlab
 
 
