@@ -4,10 +4,11 @@
 The Breathing *K*-Means is an approximation algorithm for the *k*-means problem that (on average) is **better** (higher solution quality) and **faster** (lower CPU time usage) than  ***k*-means++**. 
 
 **Techreport:**
-https://arxiv.org/abs/2006.15666 (preprint)
+https://arxiv.org/abs/2006.15666 (submitted for publication)
 
-Typical results for the "rice" data set (10000 points drawn from a mixture of 200 elongated 2D-Gaussians). *k*=80
-<img src="./img/rice.png" alt="rice data set" width="1000" />
+Typical results for the "Birch" data set (100000 points drawn from a mixture of 100 circular Gaussians). *k*=100
+<img src="./img/Birch1.png" alt="Birch1 data set" width="1000" />
+<p align="center">Can you spot the mistakes? :-)</p>
 
 ## Installation from pypi
 ```
@@ -35,24 +36,20 @@ Activate the created environment via
 conda activate bkm
 ```
 
-## Jupter noteboook
-
- For a number of examples please run any of the enclosed jupyter notebooks
- 
- * [2D.ipynb](notebooks/2D.ipynb) 2D-problems from the [technical report](https://arxiv.org/abs/2006.15666) executed with helper functions for brevity
- * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D-problems from the [technical report](https://arxiv.org/abs/2006.15666) executed with raw API
- * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the [original *k*-means++ publication](https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
-
- To run, e.g. the first notebook, type:
+ To run a jupyter notebook with examples, type, e.g.:
 
 ```shell
-$ jupyter lab notebooks/2D.ipynb
+jupyter lab notebooks/2D.ipynb
 ```
 
 ## Content
 The top level folder contains the following subfolders
 * data/ - data sets used in the notebooks
-* notebooks/ - jupyter notebooks with examples
+* notebooks/ - jupyter notebooks with all examples from the [technical report](https://arxiv.org/abs/2006.15666)
+  * [2D.ipynb](notebooks/2D.ipynb) 2D problems executed with helper functions for brevity
+  * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D problems executed with raw API
+  * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the [original *k*-means++ publication](https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
+
 * src/  
   * ``bkmeans.py`` - reference implementation of breathing k-means
 * misc/
@@ -69,7 +66,7 @@ There is one new parameters which can be ignored (left at default) for normal us
 
 * *m* (breathing depth), default: 5
 
-The parameter *m* can also be used, however, to generate faster ( 1 < *m* < 5) or better (*m*>5) solutions. For details see the above techreport.
+The parameter *m* can also be used, however, to generate faster ( 1 < *m* < 5) or better (*m*>5) solutions. For details see the [technical report](https://arxiv.org/abs/2006.15666).
 
 ## Example 1: running on simple random data set
 Code:
