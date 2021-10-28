@@ -1,0 +1,238 @@
+---
+title: "Hartigan-Wong Experiments"
+output: html_notebook
+---
+## Purpose
+Investigate the performance of the Hartigan-Wong algorithm for the *k*-means problems used in the preprint [Breathing-K-Means](https://arxiv.org/abs/2006.15666).
+
+### Usage
+- run whole notebook in [RStudio](https://www.rstudio.com/) for statistics on 2D or High-D data sets
+- select either 2D problems or High-D problems in the "Problem group" section below
+- graphically display single problems using function ```run_and_plot()```
+
+```{r}
+library(data.table)
+library(tidyverse)
+```
+### Simulation parameters
+```{r}
+repetitions=10    # runs per problem (), how often should each problem be run
+                 # this is *not* the Parameter nstart from kmeans (which is set to 10 in the code below)
+n_problems=20    # (select, e.g., 5,  to run only on the first 5 problems from the lists below)
+```
+### Problem group (2-D or High-D)
+```{r}
+probs=probs2D     # uncomment to run two-dimensional problems
+#probs=probsHighD # uncomment to run high-dimensional problems
+```
+### 2D problems
+```{r}
+probs2D = list(
+  'Jain#30',
+  'R15#30',
+  'D31#100',
+  'Aggregation#200',
+  'Flame#80',
+  'Spiral#80',
+  'S2#100',
+  'Unbalance#100',
+  'Birch1#100',
+  'Birch3#100',
+  'gmd5x5#50',
+  'gmd8x8#128',
+  'noise#100',
+  'vardensity#100',
+  'uniform#100',
+  'sq6x6-2x2#144',
+  'randangles#60',
+  'stains#100',
+  'correlated#100',
+  'rice#120'
+)
+
+```
+### High-D problems
+```{r}
+probsHighD = list(
+  'Cloud#25','Cloud#50','Cloud#100','Cloud#150','Cloud#200',
+  'Norm25-new#25','Norm25-new#50','Norm25-new#100','Norm25-new#150','Norm25-new#200',
+  'Intrusion#25','Intrusion#50','Intrusion#100','Intrusion#150','Intrusion#200',
+  'Spam#25','Spam#50','Spam#100','Spam#150','Spam#200'
+  )
+```
+### Function to read problem data
+```{r}
+read_data = function(problem){
+  # returns name, k, data
+  L <- as.list(strsplit(problem, "#")[[1]])
+  names(L)=c("name","k")
+  if (problem %in% probsHighD) {
+    extension = ".zip"
+  } else {
+    extension = ".csv"
+  }
+  path_to_data = "../data/" # modify as required
+  filename = paste(path_to_data,L$name,extension,sep="")
+  X <- read_csv(file = filename, col_names = FALSE, col_types = cols())
+  return( list(name=L$name, k=strtoi(L$k), X=X))
+}
+```
+
+### Function to run Hartigan-Wong
+(with 10 starts as specified by the nstart parameter)
+```{r}
+run_hartigan_wong = function(X, k) {
+  # returns SSE (phi), warning, cputime
+  # catches errors and warnings
+  t0=Sys.time()
+  tryCatch({
+    cl <-
+      kmeans(
+        X,
+        centers = k,
+        iter.max = 100,
+        nstart = 10,
+        algorithm = "Hartigan-Wong"
+      )
+    mywarn = "ok"
+  }, error = function(e) {
+    print(e)
+    mywarn <<- toString(e)
+  },
+  warning = function(e) {
+    print(e)
+    mywarn <<- toString(e)
+  })
+  t=Sys.time()-t0
+  return(list(phi=cl$tot.withinss,warn=mywarn,time=t,cl=cl))
+}
+```
+
+### Repeated runs on a list of problems
+```{r}
+# perform reps" runs for each problem
+make_stat = function(reps=1,probs) {
+  name=c()
+  k=c()
+  err=c()
+  time=c()
+  message=c()
+  for (p in probs){
+    print(p)
+    # read data
+    L = read_data(p)
+    for (z in 1:reps){
+      R=run_hartigan_wong(L$X,L$k)
+      name=c(name,L$name)
+      k=c(k,L$k)
+      err=c(err,R$phi)  
+      time=c(time,R$time)
+      message=c(message,R$warn)
+    }
+  }
+  data.table(name,k,err,time,message)
+}
+```
+
+## Make mass runs
+```{r}
+df=make_stat(reps=repetitions,probs[1:n_problems])
+```
+
+### Show raw results
+```{r}
+raw_table=as_tibble(df)
+raw_table
+```
+
+### Summarize by *k*-means problem
+Column "success" indicates the number of non-failed runs
+```{r}
+make_summary = function() {
+  #
+  # final evaluation
+  # expects result rows in df
+  #
+  res = raw_table  %>% 
+    filter(message=="ok") %>%  # only select rows with successful runs
+    group_by(name,k) %>%  # group by data set 
+    summarise(err=mean(err),t=mean(time),success=n(),.groups = 'drop') %>% # mean
+    mutate(err = formatC(err,format="e",digits=3), t=formatC(t,format="f",digits=5)) # format
+  res
+}
+final = make_summary()
+
+final
+```
+### Show failed runs summary
+```{r}
+raw_table %>% filter(message != "ok") %>% group_by(name,k) %>% summarise(failed=n(), .groups = 'drop')
+```
+## Failed runs details
+```{r}
+raw_table %>% filter(message!="ok") %>% filter(name!="xxx") %>% mutate(err=as.numeric(err))
+```
+## Run Hartigan-Wong algorithm and plot result
+```{r}
+run_and_plot = function(p) {
+  # get data
+  L = read_data(p)
+  # run Hartigan-Wong
+  R = run_hartigan_wong(L$X,L$k)
+  too_few = FALSE
+  # evaluate
+  if (R$warn != "ok") {
+    print("Hartigan-Wong algorithm failed")
+    print(R$warn)
+    if (nrow(R$cl$centers) < L$k){
+      print(paste("delivered only",as.character(nrow(R$cl$centers)),"of",as.character(L$k),"centers."))
+      print(R$cl$centers)
+      too_few = TRUE
+    } else {
+      print(paste("delivered all",as.character(nrow(R$cl$centers)),"of",as.character(L$k),"centers."))      
+    }
+  } 
+  
+  sse = formatC(R$phi, format = "e", digits = 3)
+  X=L$X
+  colnames(X) <- c("x", "y")
+  n=nrow(X)
+  if (n<1000) {
+    cex=0.5
+  } else if (n < 5000) {
+    cex=0.3
+  } else {
+    cex=0.1
+  }
+  p <- plot(
+    X[c("x","y")],
+    col = "green",
+    asp = 1,
+    cex = cex,
+    pch = 16,
+    if (too_few) {
+      main = paste(p,", failed: only ",as.character(nrow(R$cl$centers))," of ",
+                   as.character(L$k), " centroids delivered (a.o.t.)", sep="")  
+    } else {
+      main = paste(p,", ","  SSE = ",sse,sep="")
+    }
+  )
+  points(R$cl$centers, col = 1, pch = 2,cex=1.0)
+  grid()
+}
+```
+# Some examples solutions
+```{r}
+for (p in list("Jain#30","Flame#80","randangles#60","randangles#20","gmd5x5#50")) {
+    run_and_plot(p)
+  }
+```
+```{r}
+run_and_plot("Birch1#100")
+```
+## Problem Norm25-new#25
+25 clusters and 25 centroids. Only 2 from 15 dimensions shown. A good solution needs to position one centroid in each cluster.
+```{r}
+run_and_plot("Norm25-new#25")
+```
+
