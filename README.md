@@ -6,7 +6,7 @@ The Breathing *K*-Means is an approximation algorithm for the *k*-means problem 
 **Techreport:**
 https://arxiv.org/abs/2006.15666 (submitted for publication)
 
-Typical results for the "Birch" data set (100000 points drawn from a mixture of 100 circular Gaussians). *k*=100
+Typical results for the "Birch1" data set (100000 points drawn from a mixture of 100 circular Gaussians). *k*=100
 <img src="./img/Birch1.png" alt="Birch1 data set" width="1000" />
 <p align="center">Can you spot the mistakes? :-)</p>
 
