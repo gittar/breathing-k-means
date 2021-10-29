@@ -26,12 +26,12 @@ The number ```iter.max = 100``` of iterations was sufficient for all problems. T
 The tables below correspond to tables 4 to 8 in the preprint and have the following additional columns related to Hartigan-Wong (colored):
 
 * ![suv](./img/success.png) - the number of successful runs of Hartigan-Wong<br>This had to be added because in several cases, the Hartigan-Wong Algorithm aborted with the error message ```<simpleWarning: Quick-TRANSfer stage steps exceeded maximum (= 5000000)>```. The occurrence of this message seemed to depend on the *k*-means problem. For the 2D-Problems, this occurred most often for the problem "Birch1#100", where only 23 of 100 runs succeeded. Among the high-dimensional problems, particularly those based on the "Intrusion" data set, seemed nearly unsolvable by Hartigan-Wong. The SSE statistics shown were taken from the successful runs. The above problem has been known for a long time (here is a [stackoverflow post from 2014](https://stackoverflow.com/questions/21382681/kmeans-quick-transfer-stage-steps-exceeded-maximum)) but no solution seems to exist so far. The recommendations are often to use a different algorithm or to increase the number of repetitions.
-* ![suv](./img/phi_hw.png) - the SSE of the Wong-Hartigan solution
-* ![suv](./img/delta_phi_hw.png) - the percentage error improvent of Wong-Hartigan over *k*-means++ (negative values indicate deteriorations)
-* ![suv](./img/delta_phi_hw_bkm.png) - the percentage error improvent of "breathing *k*-means" over Wong-Hartigan
+* ![suv](./img/phi_hw.png) - the SSE of the Hartigan-Wong solution
+* ![suv](./img/delta_phi_hw.png) - the percentage error improvent of Hartigan-Wong over *k*-means++ (negative values indicate deteriorations)
+* ![suv](./img/delta_phi_hw_bkm.png) - the percentage error improvent of "breathing *k*-means" over Hartigan-Wong
 
 ### Two-dimensional Data Sets
-For these problems, the mean solutions from Wong-Hartigan were inferior to those from *k*-means++ apart from the two problems "Aggregation#200" and "Flame#80" (see table below). Breathing *k*-means produced for all problems better average solutions than Wong-Hartigan and *k*-means++.
+For these problems, the mean solutions from Hartigan-Wong were inferior to those from *k*-means++ apart from the two problems "Aggregation#200" and "Flame#80" (see table below). Breathing *k*-means produced for all problems better average solutions than Hartigan-Wong and *k*-means++.
 ![ko](./img/table2D.png)
 
 
