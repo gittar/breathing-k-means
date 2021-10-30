@@ -21,45 +21,46 @@ kmeans( X,
         algorithm = "Hartigan-Wong")
 ```
 
-The number ```iter.max = 100``` of iterations was sufficient for all problems. The parameter ```nstart = 10``` specifies that, for each run, the Hartigan-Wong algorithm is to be performed ten times before the best result is chosen. This same value is used per default in ```scikit-learn``` for *k*-means++ (and was also used in the preprint as).
+The number ```iter.max = 100``` of iterations was generally sufficient for all problems (only very occasional and only for very few problems runs did not converge within this number of iterations). The parameter ```nstart = 10``` specifies that, for each run, the Hartigan-Wong algorithm is to be performed ten times before the best result is chosen. The same value is used per default in ```scikit-learn``` for *k*-means++ (and was used in the preprint for all *k*-means++ experiments).
 
 The tables below correspond to tables 4 to 8 in the preprint and have the following additional columns related to Hartigan-Wong (colored):
 
-* ![suv](./img/success.png) - the number of successful runs of Hartigan-Wong<br>This had to be added because in several cases, the Hartigan-Wong Algorithm aborted with the error message ```<simpleWarning: Quick-TRANSfer stage steps exceeded maximum (= 5000000)>```. The occurrence of this message seemed to depend on the *k*-means problem. For the 2D-Problems, this occurred most often for the problem "Birch1#100", where only 23 of 100 runs succeeded. Among the high-dimensional problems, particularly those based on the "Intrusion" data set, seemed nearly unsolvable by Hartigan-Wong. The SSE statistics shown were taken from the successful runs. The above problem has been known for a long time (here is a [stackoverflow post from 2014](https://stackoverflow.com/questions/21382681/kmeans-quick-transfer-stage-steps-exceeded-maximum)) but no solution seems to exist so far. The recommendations are often to use a different algorithm or to increase the number of repetitions.
-* ![suv](./img/phi_hw.png) - the SSE of the Hartigan-Wong solution
-* ![suv](./img/delta_phi_hw.png) - the percentage error improvent of Hartigan-Wong over *k*-means++ defined as $\Delta\phi_{hw} = 1 - \phi_{hw}/\phi_{km++}$ (negative values indicate deteriorations)
-* ![suv](./img/delta_phi_hw_bkm.png) - the percentage error improvent of "breathing *k*-means" over Hartigan-Wong defined as $\Delta\phi^{hw}_{bkm} = 1 - \phi_{bkm}/\phi_{hw}$ 
+* ![alt](./img/success.png) - the number of successful runs of Hartigan-Wong<br>This had to be added because in several cases, the Hartigan-Wong Algorithm aborted with the error message ```<simpleWarning: Quick-TRANSfer stage steps exceeded maximum (= 5000000)>```. The occurrence of this message seemed to depend on the *k*-means problem. For the 2D-Problems, this occurred most often for the problem "Birch1#100", where only 23 of 100 runs succeeded. Among the high-dimensional problems, particularly those based on the "Intrusion" data set, seemed nearly unsolvable by Hartigan-Wong. The SSE statistics shown were taken from the successful runs. The above problem has been known for a long time (here is a [stackoverflow post from 2014](https://stackoverflow.com/questions/21382681/kmeans-quick-transfer-stage-steps-exceeded-maximum)) but no solution seems to exist so far. The recommendations are often to use a different algorithm or to increase the number of repetitions.
+* ![alt](./img/phi_hw.png) - the SSE of the Hartigan-Wong solution
+* ![alt](./img/delta_phi_hw.png) - the percentage error improvent of Hartigan-Wong over *k*-means++ defined as $\Delta\phi_{hw} = 1 - \phi_{hw}/\phi_{km++}$ (negative values indicate deteriorations)
+* ![alt](./img/delta_phi_hw_bkm.png) - the percentage error improvent of "breathing *k*-means" over Hartigan-Wong defined as $\Delta\phi^{hw}_{bkm} = 1 - \phi_{bkm}/\phi_{hw}$ 
 
 As described in the [preprint on page 20](https://arxiv.org/pdf/2006.15666.pdf#page=20), the column $\Delta\phi_{bkm}$ contains the relative SSE improvement of "Breathing *k*-means" over *k*-means++ defined as $\Delta\phi_{bkm} = 1 - \phi_{bkm}/\phi_{km++}$. In the preprint this was denoted simply as 
 $\Delta\phi$ since no other algorithm was compared to *k*-means++.
 
 ### Two-dimensional Data Sets
 For these problems, the average solutions from Hartigan-Wong were inferior to those from *k*-means++ (see table below) apart from two problems,"Aggregation#200" and "Flame#80". Breathing *k*-means produced for all problems better average solutions (green column) than Hartigan-Wong and *k*-means++.
-![ko](./img/table2D.png)
+![alt](./img/table2D.png)
 
 
 
 Below is a typical result for the problem "gmd5x5". Each good solution for this problem needs to have exactly two centroids in each cluster. This is violated by Hartigan-Wong, which positioned one, three, and in one case even four centroids in particular clusters. On average, the Hartigan-Wong solutions for this problem were 13.9 percent worse than those from *k*-means++. The solutions of breathing *k*-means were about 18% better than those of Hartigan-Wong.
-![ko](./img/gmd5x5.png)
+![alt](./img/gmd5x5.png)
 ### High-dimensional Data Sets
 
 For the Cloud data set, the solutions from Hartigan-Wong were consistently inferior by two-digit percentages.
-![ko](./img/tableCloud.png)
+![alt](./img/tableCloud.png)
 
 For the Norm25-new data set, the results were special. For the seemingly trivial case *k=25* (where both *k*-means++ and breathing *k*-means practically always found the obvious solution with one centroid per cluster), Hartigan-Wong found mostly poor solutions with huge error values. Also, for *k=50*, Hartigan-Wong could not find competitive solutions. However, for *k in {100,150,200}* better average solutions were found than by *k*-means++ and for *k in {150,200}* the Hartigan-Wong solutions were even slightly better than those found by breathing *k*-means
-![ko](./img/tableNorm25-new.png)
+![alt](./img/tableNorm25-new.png)
+
 The example below helps to understand the enormous difference in SSE between Hartigan-Wong and the other two algorithms for problem Norm25-new#25. Since one can visually distinguish only 20 of 25 centroids (the triangles), probably 5 clusters have two associated centroids. Therefore some of the other centroids are positioned in the center of gravity of several clusters, which causes the immense SSE. Both *k*-means++ and breathing *k*-means position one centroid in each cluster for this problem and, therefore, have the same SSE values (three orders of magnitude smaller than Hartigan-Wong).
-![ko](./img/Norm25-new.png)
+![alt](./img/Norm25-new.png)
 
 The Intrusion data set was the hardest one for the used Hartigan-Wong implementation of the R package. Only for *k=25* was a solution found. All runs with *k in {50,100,150,200}* stopped with the message
 
 ```
 simpleWarning: Quick-TRANSfer stage steps exceeded maximum (= 5000000)
 ```
-![ko](./img/tableIntrusion.png)
+![alt](./img/tableIntrusion.png)
 
 For the Spam data set, the solutions from Hartigan Wong were extremely poor. In a few runs for *k=25*, the algorithm failed.
-![ko](./img/tableSpam.png)
+![alt](./img/tableSpam.png)
 
 ## CPU time 
 While we do not make an effort to report detailed CPU usage for Hartigan-Wong, the implementation ran very fast using - in particular for smaller problems- significantly less CPU time than the other two algorithms. However, due to the observed quality of the solutions, the algorithm probably does not hit a "sweet spot" on the CPU time/SSE plane. Other algorithms should provide better solutions (or guaranteed solutions at all) in the given CPU time.
