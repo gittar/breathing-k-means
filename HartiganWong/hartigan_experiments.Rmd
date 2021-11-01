@@ -17,8 +17,8 @@ library(tidyverse)
 ### Simulation parameters
 ```{r}
 repetitions=10    # runs per problem (), how often should each problem be run
-                 # this is *not* the Parameter nstart from kmeans (which is set to 10 in the code below)
-n_problems=20    # (select, e.g., 5,  to run only on the first 5 problems from the lists below)
+                  # this is *not* the Parameter nstart from kmeans (which is set to 10 in the code below)
+n_problems=20     # (select, e.g., 5,  to run only on the first 5 problems from the lists below)
 ```
 ### 2D problems
 ```{r}
