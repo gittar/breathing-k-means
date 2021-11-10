@@ -3,8 +3,10 @@
 
 The Breathing *K*-Means is an approximation algorithm for the *k*-means problem that (on average) is **better** (higher solution quality) and **faster** (lower CPU time usage) than  ***k*-means++**. 
 
-**Techreport:**
+**Preprint:**
 https://arxiv.org/abs/2006.15666 (submitted for publication)
+
+Upon request [comparative experiments with the "Hartigan-Wong" algorithm](./HartiganWong/hartiganwong.md) (the default k-means method in R) were made (post-submission and confirming the choice of *k*-means++ as point of reference).
 
 Typical results for the "Birch1" data set (100000 points drawn from a mixture of 100 circular Gaussians). *k*=100
 <img src="./img/Birch1.png" alt="Birch1 data set" width="1000" />
@@ -45,7 +47,7 @@ jupyter lab notebooks/2D.ipynb
 ## Content
 The top level folder contains the following subfolders
 * data/ - data sets used in the notebooks
-* notebooks/ - jupyter notebooks with all examples from the [technical report](https://arxiv.org/abs/2006.15666)
+* notebooks/ - jupyter notebooks with all examples from the [preprint](https://arxiv.org/abs/2006.15666)
   * [2D.ipynb](notebooks/2D.ipynb) 2D problems executed with helper functions for brevity
   * [2D_detail.ipynb](notebooks/2D_detail.ipynb) 2D problems executed with raw API
   * [10+D.ipynb](notebooks/10+D.ipynb) high-dimensional problems based on the data sets from the [original *k*-means++ publication](https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf)
@@ -66,7 +68,7 @@ There is one new parameters which can be ignored (left at default) for normal us
 
 * *m* (breathing depth), default: 5
 
-The parameter *m* can also be used, however, to generate faster ( 1 < *m* < 5) or better (*m*>5) solutions. For details see the [technical report](https://arxiv.org/abs/2006.15666).
+The parameter *m* can also be used, however, to generate faster ( 1 < *m* < 5) or better (*m*>5) solutions. For details see the [preprint](https://arxiv.org/abs/2006.15666).
 
 ## Example 1: running on simple random data set
 Code:
