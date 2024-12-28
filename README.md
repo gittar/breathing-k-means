@@ -4,7 +4,7 @@
 The Breathing *K*-Means is an approximation algorithm for the *k*-means problem that (on average) is **better** (higher solution quality) and **faster** (lower CPU time usage) than  ***k*-means++**. 
 
 **Preprint:**
-https://arxiv.org/abs/2006.15666 (submitted for publication)
+https://arxiv.org/abs/2006.15666
 
 Upon request [comparative experiments with the "Hartigan-Wong" algorithm](./HartiganWong/hartiganwong.md) (the default k-means method in R) were made (post-submission and confirming the choice of *k*-means++ as point of reference).
 
